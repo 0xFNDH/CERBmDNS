@@ -222,7 +222,7 @@ class Cerberus(object):
     device_info = []
     name = b""
     for char in device:
-      if char >= 30:
+      if 126 >= char >= 30:
         name += bytes([char])
       elif len(name) >= 2:
         device_info.append(name.decode())
@@ -258,7 +258,7 @@ class Cerberus(object):
       self._bind(ttl*1.5)
       time.sleep(1)
 
-    expired = time.time()+120
+    expired = time.time()+ttl
 
     while time.time() < expired:
       data, addr = self.multi.recvfrom(2056)
@@ -268,7 +268,7 @@ class Cerberus(object):
           try:
             if len(self.splitbytes(name)) == 3:
               expired += ttl
-              return self.splitbytes(name)
+              return (self.splitbytes(name), addr)
           except Exception as e:
             print(e)
             pass
